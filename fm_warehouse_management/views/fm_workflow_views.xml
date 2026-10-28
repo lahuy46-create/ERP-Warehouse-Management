@@ -1,0 +1,250 @@
+<odoo>
+    <!-- 2.4.2: inspection before validating a native Inventory receipt -->
+    <record id="view_fm_receipt_check_list" model="ir.ui.view">
+        <field name="name">fm.receipt.check.list</field>
+        <field name="model">fm.receipt.check</field>
+        <field name="arch" type="xml">
+            <list string="Kiểm tra nhận hàng">
+                <field name="name"/>
+                <field name="picking_id"/>
+                <field name="inspector_id"/>
+                <field name="approved_by"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_fm_receipt_check_form" model="ir.ui.view">
+        <field name="name">fm.receipt.check.form</field>
+        <field name="model">fm.receipt.check</field>
+        <field name="arch" type="xml">
+            <form string="Biên bản kiểm tra nhận hàng">
+                <header>
+                    <button name="action_load_lines" type="object" string="Lấy sản phẩm từ phiếu nhận"
+                            invisible="state != 'draft' or line_ids"/>
+                    <button name="action_submit" type="object" string="Gửi quản lý duyệt"
+                            class="btn-primary" invisible="state not in ('draft', 'rejected')"/>
+                    <button name="action_approve" type="object" string="Duyệt kiểm tra"
+                            groups="stock.group_stock_manager" invisible="state != 'submitted'"/>
+                    <button name="action_reject" type="object" string="Yêu cầu kiểm tra lại"
+                            groups="stock.group_stock_manager" invisible="state != 'submitted'"/>
+                    <button name="action_open_receipt" type="object" string="Mở phiếu nhận Odoo"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,rejected"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name" readonly="state in ('submitted', 'approved')"/>
+                        <field name="picking_id" readonly="state in ('submitted', 'approved')"/>
+                        <field name="inspector_id" readonly="1"/>
+                        <field name="inspected_at" readonly="1"/>
+                        <field name="approved_by" readonly="1"/>
+                        <field name="approved_at" readonly="1"/>
+                        <field name="note" readonly="state in ('submitted', 'approved')"/>
+                    </group>
+                    <notebook>
+                        <page string="Kiểm tra theo sản phẩm">
+                            <field name="line_ids" readonly="state in ('submitted', 'approved')">
+                                <list editable="bottom" create="false">
+                                    <field name="move_id" readonly="1"/>
+                                    <field name="product_id" readonly="1"/>
+                                    <field name="expected_qty" readonly="1"/>
+                                    <field name="observed_qty"/>
+                                    <field name="accepted_qty"/>
+                                    <field name="damaged_qty"/>
+                                    <field name="expiry_note"/>
+                                    <field name="note"/>
+                                    <field name="has_difference" readonly="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_fm_receipt_check" model="ir.actions.act_window">
+        <field name="name">2.4.2 - Kiểm tra nhận hàng</field>
+        <field name="res_model">fm.receipt.check</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_fm_receipt_check" name="Kiểm tra nhận hàng" parent="menu_fm_root"
+              action="action_fm_receipt_check" sequence="65"/>
+
+    <!-- 2.4.3: preferred storage locations; history uses real Odoo stock moves -->
+    <record id="view_fm_storage_rule_list" model="ir.ui.view">
+        <field name="name">fm.storage.rule.list</field>
+        <field name="model">fm.storage.rule</field>
+        <field name="arch" type="xml">
+            <list string="Quy tắc vị trí lưu trữ">
+                <field name="product_id"/>
+                <field name="zone"/>
+                <field name="preferred_location_id"/>
+                <field name="note"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_fm_storage_rule_form" model="ir.ui.view">
+        <field name="name">fm.storage.rule.form</field>
+        <field name="model">fm.storage.rule</field>
+        <field name="arch" type="xml">
+            <form string="Quy tắc vị trí lưu trữ">
+                <sheet><group>
+                    <field name="product_id"/>
+                    <field name="zone"/>
+                    <field name="preferred_location_id"/>
+                    <field name="note"/>
+                    <button name="action_open_location" string="Mở vị trí kho" type="object"/>
+                </group></sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_fm_storage_rule" model="ir.actions.act_window">
+        <field name="name">2.4.3 - Quy tắc lưu trữ</field>
+        <field name="res_model">fm.storage.rule</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_fm_internal_move_history" model="ir.actions.act_window">
+        <field name="name">Lịch sử điều chuyển kho/kệ</field>
+        <field name="res_model">stock.move</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '=', 'done'), ('location_id.usage', '=', 'internal'), ('location_dest_id.usage', '=', 'internal')]</field>
+    </record>
+    <menuitem id="menu_fm_storage_rule" name="Quy tắc vị trí" parent="menu_fm_root"
+              action="action_fm_storage_rule" sequence="66" groups="stock.group_stock_manager"/>
+    <menuitem id="menu_fm_move_history" name="Lịch sử chuyển kho/kệ" parent="menu_fm_root"
+              action="action_fm_internal_move_history" sequence="67" groups="stock.group_stock_manager"/>
+
+    <!-- 2.4.5: formal approval before operator applies inventory count -->
+    <record id="view_fm_stocktake_request_list" model="ir.ui.view">
+        <field name="name">fm.stocktake.request.list</field>
+        <field name="model">fm.stocktake.request</field>
+        <field name="arch" type="xml">
+            <list string="Phiếu kiểm kê chờ duyệt">
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="location_id"/>
+                <field name="system_qty"/>
+                <field name="counted_qty"/>
+                <field name="difference_qty"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_fm_stocktake_request_form" model="ir.ui.view">
+        <field name="name">fm.stocktake.request.form</field>
+        <field name="model">fm.stocktake.request</field>
+        <field name="arch" type="xml">
+            <form string="Kiểm kê, đối chiếu và phê duyệt">
+                <header>
+                    <button name="action_submit" type="object" string="Gửi duyệt"
+                            class="btn-primary" invisible="state not in ('draft', 'rejected')"/>
+                    <button name="action_approve" type="object" string="Phê duyệt chênh lệch"
+                            groups="stock.group_stock_manager" invisible="state != 'submitted'"/>
+                    <button name="action_reject" type="object" string="Yêu cầu kiểm lại"
+                            groups="stock.group_stock_manager" invisible="state != 'submitted'"/>
+                    <button name="action_open_inventory" type="object" string="Mở kiểm kê Inventory"
+                            groups="stock.group_stock_manager" invisible="state != 'approved'"/>
+                    <button name="action_mark_applied" type="object" string="Đối chiếu tồn và hoàn tất"
+                            groups="stock.group_stock_manager" invisible="state != 'approved'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,applied"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name" readonly="state in ('submitted', 'approved', 'applied')"/>
+                        <field name="product_id" readonly="state in ('submitted', 'approved', 'applied')"/>
+                        <field name="location_id" readonly="state in ('submitted', 'approved', 'applied')"/>
+                        <field name="barcode_scanned" readonly="state in ('submitted', 'approved', 'applied')"/>
+                        <field name="counted_qty" readonly="state in ('submitted', 'approved', 'applied')"/>
+                        <field name="system_qty" readonly="1"/>
+                        <field name="difference_qty" readonly="1"/>
+                        <field name="reason" readonly="state in ('submitted', 'approved', 'applied')"/>
+                        <field name="counted_by" readonly="1"/>
+                        <field name="approved_by" readonly="1"/>
+                        <field name="approved_at" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_fm_stocktake_request" model="ir.actions.act_window">
+        <field name="name">2.4.5 - Phê duyệt kiểm kê</field>
+        <field name="res_model">fm.stocktake.request</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_fm_stocktake_request" name="Phiếu kiểm kê và phê duyệt"
+              parent="menu_fm_root" action="action_fm_stocktake_request" sequence="68"/>
+
+    <!-- 2.4.6: incidents, quarantine, vendor returns, and scrap approval -->
+    <record id="view_fm_disposition_case_list" model="ir.ui.view">
+        <field name="name">fm.disposition.case.list</field>
+        <field name="model">fm.disposition.case</field>
+        <field name="arch" type="xml">
+            <list string="Hàng lỗi, hết hạn, hoàn trả và xuất hủy">
+                <field name="name"/>
+                <field name="issue_type"/>
+                <field name="resolution"/>
+                <field name="product_id"/>
+                <field name="quantity"/>
+                <field name="source_location_id"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_fm_disposition_case_form" model="ir.ui.view">
+        <field name="name">fm.disposition.case.form</field>
+        <field name="model">fm.disposition.case</field>
+        <field name="arch" type="xml">
+            <form string="Hồ sơ xử lý hàng không đạt">
+                <header>
+                    <button name="action_submit" type="object" string="Gửi duyệt"
+                            class="btn-primary" invisible="state not in ('draft', 'rejected')"/>
+                    <button name="action_approve" type="object" string="Phê duyệt phương án"
+                            groups="stock.group_stock_manager" invisible="state != 'submitted'"/>
+                    <button name="action_reject" type="object" string="Yêu cầu bổ sung"
+                            groups="stock.group_stock_manager" invisible="state != 'submitted'"/>
+                    <button name="action_prepare_quarantine" type="object" string="Tạo phiếu chuyển HH (nháp)"
+                            groups="stock.group_stock_manager"
+                            invisible="state != 'approved' or resolution != 'quarantine'"/>
+                    <button name="action_open_scrap" type="object" string="Mở phiếu Scrap Odoo"
+                            groups="stock.group_stock_manager"
+                            invisible="state != 'approved' or resolution != 'scrap'"/>
+                    <button name="action_open_receipt_for_return" type="object" string="Mở phiếu nhận để Return"
+                            groups="stock.group_stock_manager"
+                            invisible="state != 'approved' or resolution != 'return'"/>
+                    <button name="action_close" type="object" string="Kiểm tra chứng từ và đóng hồ sơ"
+                            groups="stock.group_stock_manager" invisible="state != 'approved'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,closed"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name" readonly="state in ('submitted', 'approved', 'closed')"/>
+                        <field name="issue_type" readonly="state in ('submitted', 'approved', 'closed')"/>
+                        <field name="resolution" readonly="state in ('submitted', 'approved', 'closed')"/>
+                        <field name="product_id" readonly="state in ('submitted', 'approved', 'closed')"/>
+                        <field name="quantity" readonly="state in ('submitted', 'approved', 'closed')"/>
+                        <field name="source_location_id" readonly="state in ('submitted', 'approved', 'closed')"/>
+                        <field name="hold_location_id" invisible="resolution != 'quarantine'"
+                               readonly="state in ('submitted', 'approved', 'closed')"/>
+                        <field name="receipt_picking_id" invisible="resolution != 'return'"
+                               readonly="state in ('submitted', 'approved', 'closed')"/>
+                        <field name="note" readonly="state in ('submitted', 'approved', 'closed')"/>
+                    </group>
+                    <group string="Chứng từ thực hiện trên Inventory">
+                        <field name="quarantine_picking_id" readonly="1" invisible="resolution != 'quarantine'"/>
+                        <field name="scrap_id" invisible="resolution != 'scrap'"/>
+                        <field name="return_picking_id" invisible="resolution != 'return'"/>
+                        <field name="reported_by" readonly="1"/>
+                        <field name="approved_by" readonly="1"/>
+                        <field name="approved_at" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_fm_disposition_case" model="ir.actions.act_window">
+        <field name="name">2.4.6 - Xử lý hàng không đạt</field>
+        <field name="res_model">fm.disposition.case</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_fm_disposition_case" name="Hàng lỗi - hoàn trả - xuất hủy"
+              parent="menu_fm_root" action="action_fm_disposition_case" sequence="69"/>
+</odoo>

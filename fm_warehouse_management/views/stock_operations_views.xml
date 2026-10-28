@@ -1,0 +1,35 @@
+<odoo>
+    <!-- These are links to native Odoo Inventory models, NOT new stock engines. -->
+    <record id="action_fm_receipts" model="ir.actions.act_window">
+        <field name="name">Nhận hàng (Odoo Inventory)</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('picking_type_code', '=', 'incoming')]</field>
+    </record>
+    <record id="action_fm_transfers" model="ir.actions.act_window">
+        <field name="name">Chuyển kho / Châm hàng (Odoo Inventory)</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('picking_type_code', '=', 'internal')]</field>
+    </record>
+    <record id="action_fm_inventory_quants" model="ir.actions.act_window">
+        <field name="name">Kiểm kê / Tồn kho (Odoo Inventory)</field>
+        <field name="res_model">stock.quant</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('location_id.usage', '=', 'internal')]</field>
+    </record>
+    <record id="action_fm_locations" model="ir.actions.act_window">
+        <field name="name">Các vị trí KT / KL / TB / HH</field>
+        <field name="res_model">stock.location</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('usage', '=', 'internal')]</field>
+    </record>
+    <menuitem id="menu_fm_native_receipt" name="Nhận hàng từ DC/NCC" parent="menu_fm_root"
+              action="action_fm_receipts" sequence="60" groups="stock.group_stock_manager"/>
+    <menuitem id="menu_fm_native_transfer" name="Chuyển kho / châm kệ" parent="menu_fm_root"
+              action="action_fm_transfers" sequence="61" groups="stock.group_stock_manager"/>
+    <menuitem id="menu_fm_native_inventory" name="Kiểm kê và đối chiếu tồn" parent="menu_fm_root"
+              action="action_fm_inventory_quants" sequence="62" groups="stock.group_stock_manager"/>
+    <menuitem id="menu_fm_native_locations" name="Vị trí kho và kệ" parent="menu_fm_root"
+              action="action_fm_locations" sequence="63" groups="stock.group_stock_manager"/>
+</odoo>

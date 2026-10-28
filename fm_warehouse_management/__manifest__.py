@@ -1,0 +1,21 @@
+{
+    'name': 'FamilyMart Warehouse Management',
+    'version': '19.0.3.0.0',
+    'summary': 'Quan ly kho, ban hang CSV, cham ke, HSD, su co, BI - mot cua hang',
+    'description': 'FamilyMart thesis prototype: stock operations in Odoo + custom shelf capacity, sales batch, expiry observation, incidents and BI export.',
+    'category': 'Inventory',
+    'depends': ['stock'],
+    'data': [
+        'security/ir.model.access.csv',
+        'views/shelf_capacity_views.xml',
+        'views/sales_record_views.xml',
+        'views/expiry_issue_views.xml',
+        'views/stock_operations_views.xml',
+        'views/wizard_views.xml',
+        'views/fm_workflow_views.xml',
+        'views/fm_home_views.xml',
+    ],
+    'application': True,
+    'installable': True,
+    'license': 'LGPL-3',
+}

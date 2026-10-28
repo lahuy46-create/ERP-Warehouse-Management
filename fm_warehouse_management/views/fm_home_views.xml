@@ -1,0 +1,99 @@
+<odoo>
+    <!-- Mot ban ghi trang chu co dinh, khong luu du lieu ton kho. -->
+    <record id="record_fm_home" model="fm.home">
+        <field name="name">FamilyMart - Hệ thống quản lý kho</field>
+    </record>
+
+    <record id="view_fm_home_form" model="ir.ui.view">
+        <field name="name">fm.home.form</field>
+        <field name="model">fm.home</field>
+        <field name="arch" type="xml">
+            <form string="Trang chủ FamilyMart" create="0" edit="0" delete="0">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <p>Chọn chức năng cần thao tác. Các nghiệp vụ độc lập, không cần nhập CSV trước khi tra cứu tồn kho.</p>
+                    <h2>Bán hàng và tồn kho</h2>
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 col-md-6 col-xl-4" groups="stock.group_stock_manager">
+                            <button type="action" name="fm_warehouse_management.action_fm_sales_import_wizard" string="Nhập CSV bán hàng (3 cột)" class="btn btn-outline-primary w-100 py-3" groups="stock.group_stock_manager"/>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-4">
+                            <button type="action" name="fm_warehouse_management.action_fm_sales_batch" string="Dữ liệu bán hàng" class="btn btn-outline-primary w-100 py-3"/>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-4">
+                            <button type="action" name="fm_warehouse_management.action_fm_sales_record" string="Chi tiết doanh số" class="btn btn-outline-primary w-100 py-3"/>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-4">
+                            <button type="action" name="fm_warehouse_management.action_fm_stock_lookup" string="Tra cứu tồn kho theo vị trí" class="btn btn-outline-primary w-100 py-3"/>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-4">
+                            <button type="action" name="fm_warehouse_management.action_fm_shelf_capacity" string="Đề xuất châm hàng" class="btn btn-outline-primary w-100 py-3"/>
+                        </div>
+                    </div>
+                    <h2>Tiếp nhận, lưu trữ và điều chuyển</h2>
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 col-md-6 col-xl-4" groups="stock.group_stock_manager">
+                            <button type="action" name="fm_warehouse_management.action_fm_receipts" string="Nhận hàng từ DC/NCC" class="btn btn-outline-primary w-100 py-3" groups="stock.group_stock_manager"/>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-4">
+                            <button type="action" name="fm_warehouse_management.action_fm_receipt_check" string="Kiểm tra nhận hàng" class="btn btn-outline-primary w-100 py-3"/>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-4" groups="stock.group_stock_manager">
+                            <button type="action" name="fm_warehouse_management.action_fm_locations" string="Vị trí kho và kệ" class="btn btn-outline-primary w-100 py-3" groups="stock.group_stock_manager"/>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-4" groups="stock.group_stock_manager">
+                            <button type="action" name="fm_warehouse_management.action_fm_storage_rule" string="Quy tắc vị trí" class="btn btn-outline-primary w-100 py-3" groups="stock.group_stock_manager"/>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-4" groups="stock.group_stock_manager">
+                            <button type="action" name="fm_warehouse_management.action_fm_transfers" string="Chuyển kho / châm kệ" class="btn btn-outline-primary w-100 py-3" groups="stock.group_stock_manager"/>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-4" groups="stock.group_stock_manager">
+                            <button type="action" name="fm_warehouse_management.action_fm_internal_move_history" string="Lịch sử chuyển kho/kệ" class="btn btn-outline-primary w-100 py-3" groups="stock.group_stock_manager"/>
+                        </div>
+                    </div>
+                    <h2>Kiểm kê, hàng lỗi và báo cáo</h2>
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 col-md-6 col-xl-4" groups="stock.group_stock_manager">
+                            <button type="action" name="fm_warehouse_management.action_fm_inventory_quants" string="Kiểm kê và đối chiếu tồn" class="btn btn-outline-primary w-100 py-3" groups="stock.group_stock_manager"/>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-4">
+                            <button type="action" name="fm_warehouse_management.action_fm_stocktake_request" string="Phiếu kiểm kê và phê duyệt" class="btn btn-outline-primary w-100 py-3"/>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-4">
+                            <button type="action" name="fm_warehouse_management.action_fm_expiry" string="Theo dõi HSD 7/15/30" class="btn btn-outline-primary w-100 py-3"/>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-4">
+                            <button type="action" name="fm_warehouse_management.action_fm_issue" string="Báo cáo hàng lỗi/chênh lệch" class="btn btn-outline-primary w-100 py-3"/>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-4">
+                            <button type="action" name="fm_warehouse_management.action_fm_disposition_case" string="Hàng lỗi - hoàn trả - xuất hủy" class="btn btn-outline-primary w-100 py-3"/>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-4" groups="stock.group_stock_manager">
+                            <button type="action" name="fm_warehouse_management.action_fm_bi_export_wizard" string="Xuất CSV cho Power BI" class="btn btn-outline-primary w-100 py-3" groups="stock.group_stock_manager"/>
+                        </div>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_fm_home" model="ir.actions.act_window">
+        <field name="name">Trang chủ FamilyMart</field>
+        <field name="res_model">fm.home</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_fm_home_form"/>
+        <field name="res_id" ref="record_fm_home"/>
+        <field name="target">main</field>
+    </record>
+
+    <!-- Xoa action mac dinh cu tren menu goc. -->
+    <record id="menu_fm_root" model="ir.ui.menu">
+        <field name="action" eval="False"/>
+    </record>
+
+    <!-- Trang chu la menu con dau tien, duoc mo khi chon app FamilyMart. -->
+    <menuitem id="menu_fm_home" name="Trang chủ" parent="menu_fm_root"
+              action="action_fm_home" sequence="0" groups="base.group_user"/>
+</odoo>

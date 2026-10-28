@@ -1,0 +1,103 @@
+<odoo>
+    <record id="view_fm_sales_record_list" model="ir.ui.view">
+        <field name="name">fm.sales.record.list</field>
+        <field name="model">fm.sales.record</field>
+        <field name="arch" type="xml">
+            <list string="Dòng bán hàng" create="false">
+                <field name="batch_id"/>
+                <field name="barcode"/>
+                <field name="product_name"/>
+                <field name="quantity"/>
+                <field name="product_id"/>
+                <field name="match_status"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_fm_sales_record_form" model="ir.ui.view">
+        <field name="name">fm.sales.record.form</field>
+        <field name="model">fm.sales.record</field>
+        <field name="arch" type="xml">
+            <form string="Dòng bán hàng">
+                <sheet>
+                    <group>
+                        <field name="batch_id" readonly="1"/>
+                        <field name="barcode" readonly="state == 'done'"/>
+                        <field name="product_name" readonly="state == 'done'"/>
+                        <field name="quantity" readonly="state == 'done'"/>
+                        <field name="product_id" readonly="1"/>
+                        <field name="match_status" readonly="1"/>
+                        <field name="sale_location_id" readonly="state == 'done'"/>
+                        <field name="stock_move_id" readonly="1"/>
+                        <field name="state" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_fm_sales_batch_list" model="ir.ui.view">
+        <field name="name">fm.sales.batch.list</field>
+        <field name="model">fm.sales.batch</field>
+        <field name="arch" type="xml">
+            <list string="Các lần nhập bán hàng" create="false">
+                <field name="name"/>
+                <field name="period_start"/>
+                <field name="period_end"/>
+                <field name="sale_count"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_fm_sales_batch_form" model="ir.ui.view">
+        <field name="name">fm.sales.batch.form</field>
+        <field name="model">fm.sales.batch</field>
+        <field name="arch" type="xml">
+            <form string="Kiểm tra dữ liệu bán hàng">
+                <header>
+                    <button name="action_post" type="object" string="Xác nhận bán hàng / Trừ tồn kệ"
+                            class="btn-primary" groups="stock.group_stock_manager"
+                            invisible="state == 'done'"
+                            confirm="Chỉ thực hiện nếu doanh số chưa được ghi nhận vào tồn kho Odoo. Xác nhận xuất hàng từ kệ?"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name" readonly="1"/>
+                        <field name="filename" readonly="1"/>
+                        <field name="period_start" readonly="1"/>
+                        <field name="period_end" readonly="1"/>
+                        <field name="confirm_not_already_recorded" readonly="state == 'done'"/>
+                    </group>
+                    <notebook>
+                        <page string="Danh sách bán hàng">
+                            <field name="line_ids" readonly="state == 'done'">
+                                <list editable="bottom" create="false" delete="false">
+                                    <field name="barcode" readonly="1"/>
+                                    <field name="product_name" readonly="1"/>
+                                    <field name="quantity" readonly="1"/>
+                                    <field name="product_id" readonly="1"/>
+                                    <field name="match_status" readonly="1"/>
+                                    <field name="state" readonly="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_fm_sales_record" model="ir.actions.act_window">
+        <field name="name">Dòng bán hàng</field>
+        <field name="res_model">fm.sales.record</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_fm_sales_batch" model="ir.actions.act_window">
+        <field name="name">Dữ liệu bán hàng</field>
+        <field name="res_model">fm.sales.batch</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_fm_sales_batch" name="Dữ liệu bán hàng"
+              parent="menu_fm_root" action="action_fm_sales_batch" sequence="1"/>
+    <menuitem id="menu_fm_sales_record" name="Chi tiết doanh số"
+              parent="menu_fm_root" action="action_fm_sales_record" sequence="21"/>
+</odoo>

@@ -1,0 +1,54 @@
+<odoo>
+    <record id="view_fm_shelf_capacity_list" model="ir.ui.view">
+        <field name="name">fm.shelf.capacity.list</field>
+        <field name="model">fm.shelf.capacity</field>
+        <field name="arch" type="xml">
+            <list string="Đề xuất châm hàng">
+                <field name="product_id"/>
+                <field name="location_id"/>
+                <field name="capacity"/>
+                <field name="source_location_id"/>
+                <field name="shelf_qty"/>
+                <field name="source_available_qty"/>
+                <field name="suggested_qty"/>
+                <field name="low_shelf"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_fm_shelf_capacity_form" model="ir.ui.view">
+        <field name="name">fm.shelf.capacity.form</field>
+        <field name="model">fm.shelf.capacity</field>
+        <field name="arch" type="xml">
+            <form string="Sức chứa và đề xuất châm kệ">
+                <header>
+                    <button name="action_create_replenishment" type="object"
+                            string="Tạo phiếu châm hàng (nháp)" class="btn-primary"
+                            groups="stock.group_stock_manager"/>
+                </header>
+                <sheet>
+                    <group string="Cấu hình kệ">
+                        <field name="product_id"/>
+                        <field name="location_id"/>
+                        <field name="capacity"/>
+                        <field name="source_location_id"/>
+                    </group>
+                    <group string="Dữ liệu tồn kho thời điểm mở">
+                        <field name="shelf_qty" readonly="1"/>
+                        <field name="source_available_qty" readonly="1"/>
+                        <field name="suggested_qty" readonly="1"/>
+                        <field name="low_shelf" readonly="1"/>
+                        <field name="replenishment_picking_id" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_fm_shelf_capacity" model="ir.actions.act_window">
+        <field name="name">Đề xuất châm hàng</field>
+        <field name="res_model">fm.shelf.capacity</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_fm_root" name="FamilyMart" sequence="20" groups="base.group_user"/>
+    <menuitem id="menu_fm_shelf_capacity" name="Đề xuất châm hàng"
+              parent="menu_fm_root" action="action_fm_shelf_capacity" sequence="30"/>
+</odoo>
